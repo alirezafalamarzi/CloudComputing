@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package chatroom;
+
+
+// The Chat service definition.
+service Chat {
+	rpc CreateRoom (Room) returns (Success) {}
+	rpc RemoveRoom (Room) returns (Success) {}
+	rpc GetRooms (User) returns (Reply) {}
+	rpc AddUser (User) returns (Success) {}
+	rpc RemoveUser (User) returns (Success) {}
+	rpc JoinRoom (UserRoom) returns (Success) {}
+	rpc LeaveRoom (UserRoom) returns (Success) {}
+	rpc AddMessage (UserRoomMessage) returns (Success) {}
+	rpc GetMessages (Room) returns (Messages) {}
+	rpc CanSend (UserRoom) returns (Success) {}
+}
+
+message Room {
+	string name = 1;
+}
+
+message User {
+	string name = 1;
+}
+
+message UserRoom {
+	string user = 1;
+	string room = 2;
+}
+
+message UserRoomMessage {
+	string user = 1;
+	string room = 2;
+	string msg = 3;
+}
+
+message Messages {
+	repeated string text = 1;
+}
+
+message Success {
+	bool flag = 1;
+}
+
+message Reply {
+	string text = 1;
+}

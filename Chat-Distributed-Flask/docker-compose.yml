@@ -1,0 +1,101 @@
+services:
+  redis1:
+    image: redis:latest
+    container_name: redis1
+    ports:
+      - 6379:6379
+    stdin_open: true
+    tty: true
+
+  server1:
+    image: python:latest
+    container_name: server1
+    depends_on:
+      - redis1
+    ports:
+      - 5001:5000
+    volumes:
+      - ./server.py:/app/server.py
+    stdin_open: true
+    tty: true
+    working_dir: /app
+    command: >
+      /bin/bash -c "
+      pip install Flask Flask-Cors redis &&
+      flask --app server run --host=0.0.0.0 --port=5000
+      "
+
+  server2:
+    image: python:latest
+    container_name: server2
+    depends_on:
+      - redis1
+    ports:
+      - 5002:5000
+    volumes:
+      - ./server.py:/app/server.py
+    stdin_open: true
+    tty: true
+    working_dir: /app
+    command: >
+      /bin/bash -c "
+      pip install Flask Flask-Cors redis &&
+      flask --app server run --host=0.0.0.0 --port=5000
+      "
+  server3:
+    image: python:latest
+    container_name: server3
+    depends_on:
+      - redis1
+    ports:
+      - 5003:5000
+    volumes:
+      - ./server.py:/app/server.py
+    stdin_open: true
+    tty: true
+    working_dir: /app
+    command: >
+      /bin/bash -c "
+      pip install Flask Flask-Cors redis &&
+      flask --app server run --host=0.0.0.0 --port=5000
+      "
+  # The CLI REST client container
+  cli-1:
+    image: python
+    container_name: cli-1
+    volumes:
+      - ./client.py:/app/client.py
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    command: >
+      /bin/bash -c "
+      pip install requests &&
+      /bin/bash
+      "
+  cli-2:
+    image: python
+    container_name: cli-2
+    volumes:
+      - ./client.py:/app/client.py
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    command: >
+      /bin/bash -c "
+      pip install requests &&
+      /bin/bash
+      "
+  cli-3:
+    image: python
+    container_name: cli-3
+    volumes:
+      - ./client.py:/app/client.py
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    command: >
+      /bin/bash -c "
+      pip install requests &&
+      /bin/bash
+      "

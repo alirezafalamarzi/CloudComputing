@@ -1,0 +1,37 @@
+services:
+  server:
+    image: python
+    container_name: server
+    ports:
+      - 8080:8080
+    volumes:
+      - ./server.py:/app/server.py
+      - ./chat.proto:/app/chat.proto
+    stdin_open: true
+    tty: true
+    working_dir: /app
+    command: >
+      /bin/bash -c "
+      pip install grpcio grpcio-tools &&
+      python -m grpc_tools.protoc -I./ --python_out=. --pyi_out=. --grpc_python_out=. ./chat.proto &&
+      python server.py
+      "
+
+  client:
+    image: python
+    depends_on:
+      - server
+    volumes:
+      - ./client.py:/app/client.py
+      - ./chat.proto:/app/chat.proto
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    deploy:
+      replicas: 10    # The number of client containers that are run simultaneously:
+    command: >
+      /bin/bash -c "
+      pip install grpcio grpcio-tools &&
+      python -m grpc_tools.protoc -I./ --python_out=. --pyi_out=. --grpc_python_out=. ./chat.proto &&
+      /bin/bash
+      "
